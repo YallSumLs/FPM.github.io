@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎣 Fishing Planet Macro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00ffc3;
+      --secondary-color: #00bfff;
+      --background: linear-gradient(135deg, #0f0f1f 0%, #1b1b2f 100%);
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      background: var(--background);
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 400px;
+      box-shadow: 0 0 30px rgba(0, 255, 200, 0.2);
+      position: relative;
+      animation: glow 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 20px #00ffc3; }
+      100% { box-shadow: 0 0 40px #00bfff; }
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(0, 255, 195, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 15px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 12px;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: 0.25s ease;
+      box-shadow: 0 0 10px rgba(0,255,200,0.3);
+    }
+
+    button:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 18px var(--primary-color);
+    }
+
+    .input-group {
+      margin: 25px 0 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #aaa;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.05);
+      color: var(--primary-color);
+      text-align: center;
+      box-shadow: inset 0 0 8px rgba(0, 255, 200, 0.15);
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: var(--primary-color);
+      text-shadow: 0 0 5px #00ffc3;
+      min-height: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎣 Fishing Planet Macro</h1>
+
+    <button class="macro-btn" id="stopngo">🎯 Stop N Go</button>
+    <button class="macro-btn" id="jigging">🎯 Twitch</button>
+    <button class="macro-btn" id="reel">🎯 Reel</button>
+
+    <div class="input-group">
+      <label for="toggleKey">Set Toggle Key</label>
+      <input type="text" id="toggleKey" maxlength="1" placeholder="." />
+    </div>
+
+    <div class="status" id="status">🕹️ Ready to fish!</div>
+    <div class="footer">v1.0 • Built for legends</div>
+  </div>
+
+  <!-- 🔊 Sound Elements -->
+  <audio id="hoverSound" src="hover.mp3" preload="auto"></audio>
+  <audio id="clickSound" src="click.mp3" preload="auto"></audio>
+
+  <script>
+    const status = document.getElementById('status');
+    const hoverSound = document.getElementById('hoverSound');
+    const clickSound = document.getElementById('clickSound');
+
+    function playSound(audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {}); // avoid uncaught DOMException on silent autoplay
+    }
+
+    function sendToBackend(macro) {
+      console.log(`Macro selected: ${macro}`);
+      // Hook to Python backend here
+    }
+
+    function sendToBackendKey(key) {
+      console.log(`Toggle key updated: ${key}`);
+      // Hook to backend
+    }
+
+    // Add sounds and handlers to all buttons
+    document.querySelectorAll(".macro-btn").forEach(btn => {
+      btn.addEventListener("mouseenter", () => playSound(hoverSound));
+      btn.addEventListener("click", () => playSound(clickSound));
+    });
+
+    document.getElementById('stopngo').addEventListener('click', () => {
+      status.textContent = "🎯 Selected: Stop N Go";
+      sendToBackend("Stop N Go");
+    });
+
+    document.getElementById('jigging').addEventListener('click', () => {
+      status.textContent = "🎯 Selected: Twitching";
+      sendToBackend("Jigging");
+    });
+
+    document.getElementById('reel').addEventListener('click', () => {
+      status.textContent = "🎯 Selected: Reel";
+      sendToBackend("Reel");
+    });
+
+    document.getElementById('toggleKey').addEventListener('input', () => {
+      const key = document.getElementById('toggleKey').value;
+      status.textContent = `🔁 Toggle key set to: ${key}`;
+      sendToBackendKey(key);
+    });
+  </script>
+</body>
+</html>
